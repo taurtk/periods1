@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess the Number Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+
+    h1 {
+      color: #4CAF50;
+    }
+
+    p {
+      color: #333;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+  <h1>Guess the Number Game</h1>
+  <p>Guess a number between 1 and 100:</p>
+  <input type="number" id="userGuess" min="1" max="100">
+  <button onclick="checkGuess()">Submit Guess</button>
+  <div id="result"></div>
+
+  <script>
+    // Generate a random number between 1 and 100
+    const targetNumber = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+
+    function checkGuess() {
+      const userGuess = parseInt(document.getElementById('userGuess').value, 10);
+
+      if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+        alert('Please enter a valid number between 1 and 100.');
+        return;
+      }
+
+      attempts++;
+
+      if (userGuess === targetNumber) {
+        displayResult(`Congratulations! You guessed the number ${targetNumber} in ${attempts} attempts.`);
+        disableInputAndButton();
+      } else {
+        displayResult(`Try again. ${userGuess} is not the correct number.`);
+      }
+    }
+
+    function displayResult(message) {
+      document.getElementById('result').innerHTML = message;
+    }
+
+    function disableInputAndButton() {
+      document.getElementById('userGuess').disabled = true;
+      document.querySelector('button').disabled = true;
+    }
+  </script>
+</body>
+</html>

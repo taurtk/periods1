@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Details</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f7f7f7;
+      color: #333;
+    }
+
+    #recipe-details {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 8px;
+    }
+
+    .recipe-img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .ingredients {
+      margin-top: 10px;
+    }
+
+    .back-to-list {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="recipe-details">
+  <h1>Recipe Details</h1>
+  <div id="recipe-content"></div>
+  <a class="back-to-list" href="index.html">Back to Recipe List</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function () {
+    const recipeContent = $('#recipe-content');
+
+    function displayRecipeDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const recipeId = urlParams.get('id');
+
+      if (recipeId) {
+        const apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
+
+        $.ajax({
+          url: apiUrl,
+          method: 'GET',
+          success: function (data) {
+            if (data.meals && data.meals.length > 0) {
+              const meal = data.meals[0];
+              const recipeImage = $('<img>').addClass('recipe-img').attr('src', meal.strMealThumb);
+              const recipeTitle = $('<h2>').text(meal.strMeal);
+              const ingredientsList = $('<ul>').addClass('ingredients');
+
+              // Display ingredients
+              for (let i = 1; i <= 20; i++) {
+                const ingredient = meal[`strIngredient${i}`];
+                const measure = meal[`strMeasure${i}`];
+
+                if (ingredient && measure) {
+                  const listItem = $('<li>').text(`${measure} ${ingredient}`);
+                  ingredientsList.append(listItem);
+                }
+              }
+
+              recipeContent.append(recipeImage, recipeTitle, ingredientsList);
+            } else {
+              recipeContent.append('<p>No details found for this recipe.</p>');
+            }
+          },
+          error: function () {
+            recipeContent.append('<p>Error fetching recipe details. Please try again later.</p>');
+          }
+        });
+      } else {
+        recipeContent.append('<p>No recipe ID provided.</p>');
+      }
+    }
+
+    displayRecipeDetails();
+  });
+</script>
+
+</body>
+</html>

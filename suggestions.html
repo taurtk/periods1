@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Period-Friendly Recipes</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f7f7f7;
+      color: #333;
+    }
+
+    #recipe-container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 8px;
+    }
+
+    .recipe-card {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .recipe-img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .view-details {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="recipe-container">
+  <h1>Period-Friendly Recipes</h1>
+  <div id="recipe-list"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function () {
+    const recipeContainer = $('#recipe-list');
+
+    function displayRecipes() {
+      const apiUrl = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=seafood'; // 'c=seafood' is just an example; you can modify the category
+
+      $.ajax({
+        url: apiUrl,
+        method: 'GET',
+        success: function (data) {
+          if (data.meals && data.meals.length > 0) {
+            data.meals.forEach(function (meal) {
+              const recipeCard = $('<div>').addClass('recipe-card');
+              const recipeLabel = $('<h2>').text(meal.strMeal);
+              const recipeImage = $('<img>').addClass('recipe-img').attr('src', meal.strMealThumb);
+              const recipeLink = $('<a>').addClass('view-details').attr('href', `recipe-details.html?id=${meal.idMeal}`).text('View Recipe Details');
+
+              recipeCard.append(recipeLabel, recipeImage, recipeLink);
+              recipeContainer.append(recipeCard);
+            });
+          } else {
+            recipeContainer.append('<p>No recipes found.</p>');
+          }
+        },
+        error: function () {
+          recipeContainer.append('<p>Error fetching recipes. Please try again later.</p>');
+        }
+      });
+    }
+
+    displayRecipes();
+  });
+</script>
+
+</body>
+</html>
